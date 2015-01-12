@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <soap:Body>
+    <DownloadFileAttachmentByItemIdResponse xmlns="urn:thesecretserver.com">
+      <DownloadFileAttachmentByItemIdResult>
+        <Errors />
+        <FileAttachment>MTIzNFB1YmxpY0tleTU2Nzg9PQ==</FileAttachment>
+        <FileName>zanzi_key.pub</FileName>
+      </DownloadFileAttachmentByItemIdResult>
+    </DownloadFileAttachmentByItemIdResponse>
+  </soap:Body>
+</soap:Envelope>
