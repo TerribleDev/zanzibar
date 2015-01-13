@@ -1,5 +1,5 @@
 # Zanzibar
-
+[![Gem Version](https://badge.fury.io/rb/zanzibar.svg)](http://badge.fury.io/rb/zanzibar)
 
 Zanzibar is a utility to retrieve secrets from a Secret Server installation. It supports retrieval of a password, public/private key, or secret attachment.
 
