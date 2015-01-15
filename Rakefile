@@ -1,10 +1,8 @@
 require "bundler/gem_tasks"
+require "bundler/setup" # load up our gem environment (incl. local zanzibar)
+require 'rspec/core/rake_task'
+require 'zanzibar/version'
 
-task 'test' do
-  Dir.chdir('test')
-  system("rspec zanzibar_spec.rb")
-end
+task :default => [:test]
 
-task 'install_dependencies' do
-  system('bundle install')
-end
+RSpec::Core::RakeTask.new(:test)

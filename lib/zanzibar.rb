@@ -10,9 +10,16 @@ module Zanzibar
   class Zanzibar
 
     ##
-    # @param args{:domain, :wsdl, :pwd, :globals{}}
+    # @param args{:domain, :wsdl, :pwd, :username, :globals{}}
 
     def initialize(args = {})
+
+      if args[:username]
+        @@username = args[:username]
+      else
+        @@username = ENV['USER']
+      end
+
       if args[:wsdl]
         @@wsdl = args[:wsdl]
       else
@@ -46,7 +53,7 @@ module Zanzibar
     # @return [String] the password for the current user
 
     def prompt_for_password
-      puts "Please enter password for #{ENV['USER']}:"
+      puts "Please enter password for #{@@username}:"
       return STDIN.noecho(&:gets).chomp
     end
 
@@ -73,13 +80,13 @@ module Zanzibar
 
     def get_token
       begin
-        response = @@client.call(:authenticate, message: { username: ENV['USER'], password: @@password, organization: "", domain: @@domain }).hash
+        response = @@client.call(:authenticate, message: { username: @@username, password: @@password, organization: "", domain: @@domain }).hash
         if response[:envelope][:body][:authenticate_response][:authenticate_result][:errors]
-          raise "Error generating the authentication token for user #{ENV['USER']}: #{response[:envelope][:body][:authenticate_response][:authenticate_result][:errors][:string]}"
+          raise "Error generating the authentication token for user #{@@username}: #{response[:envelope][:body][:authenticate_response][:authenticate_result][:errors][:string]}"
         end
         response[:envelope][:body][:authenticate_response][:authenticate_result][:token]
       rescue Savon::Error => err
-        raise "There was an error generating the authentiaton token for user #{ENV['USER']}: #{err}"
+        raise "There was an error generating the authentiaton token for user #{@@username}: #{err}"
       end
     end
 
@@ -108,9 +115,16 @@ module Zanzibar
     def get_password(scrt_id)
       begin
         secret = get_secret(scrt_id)
-        return secret[:envelope][:body][:get_secret_response][:get_secret_result][:secret][:items][:secret_item][1][:value]
+        secret_items = secret[:envelope][:body][:get_secret_response][:get_secret_result][:secret][:items][:secret_item]
+        return get_secret_item_by_field_name(secret_items,"Password")[:value]
       rescue Savon::Error => err
         raise "There was an error getting the password for secret #{scrt_id}: #{err}"
+      end
+    end
+
+    def get_secret_item_by_field_name(secret_items, field_name)
+      secret_items.each do |item|
+        return item if item[:field_name] == field_name
       end
     end
 
@@ -122,25 +136,12 @@ module Zanzibar
 
     def get_scrt_item_id(scrt_id, type, token)
       secret = get_secret(scrt_id, token)
-      case type
-        when 'privatekey'
-          ## Get private key item id
-          secret[:envelope][:body][:get_secret_response][:get_secret_result][:secret][:items][:secret_item].each do |item|
-            return item[:id] if item[:field_name] == 'Private Key'
-          end
-        when 'publickey'
-          ## Get public key item id
-          secret[:envelope][:body][:get_secret_response][:get_secret_result][:secret][:items][:secret_item].each do |item|
-            return item[:id] if item[:field_name] == 'Public Key'
-          end
-        when 'attachment'
-          ## Get attachment item id. This currently only supports secrets with one attachment.
-          secret[:envelope][:body][:get_secret_response][:get_secret_result][:secret][:items][:secret_item].each do |item|
-            return item[:id] if item[:field_name] == 'Attachment'
-          end
-        else
-          raise "Unknown type, #{type}."
-        end
+      secret_items = secret[:envelope][:body][:get_secret_response][:get_secret_result][:secret][:items][:secret_item]
+      begin
+        return get_secret_item_by_field_name(secret_items, type)[:id]
+      rescue
+        raise "Unknown type, #{type}."
+      end
     end
 
     ## Downloads the private key for a secret and places it where Zanzibar is running, or :path if specified
@@ -152,7 +153,7 @@ module Zanzibar
       FileUtils.mkdir_p(args[:path]) if args[:path]
       path = args[:path] ? args[:path] : '.' ## The File.join below doesn't handle nils well, so let's take that possibility away.
       begin
-        response = @@client.call(:download_file_attachment_by_item_id, message: { token: token, secretId: args[:scrt_id], secretItemId: args[:scrt_item_id] || get_scrt_item_id(args[:scrt_id], 'privatekey', token)}).hash
+        response = @@client.call(:download_file_attachment_by_item_id, message: { token: token, secretId: args[:scrt_id], secretItemId: args[:scrt_item_id] || get_scrt_item_id(args[:scrt_id], 'Private Key', token)}).hash
         if response[:envelope][:body][:download_file_attachment_by_item_id_response][:download_file_attachment_by_item_id_result][:errors]
           raise "There was an error getting the private key for secret #{args[:scrt_id]}: #{response[:envelope][:body][:download_file_attachment_by_item_id_response][:download_file_attachment_by_item_id_result][:string]}"
         end
@@ -173,7 +174,7 @@ module Zanzibar
       FileUtils.mkdir_p(args[:path]) if args[:path]
       path = args[:path] ? args[:path] : '.' ## The File.join below doesn't handle nils well, so let's take that possibility away.
       begin
-        response = @@client.call(:download_file_attachment_by_item_id, message: { token: token, secretId: args[:scrt_id], secretItemId: args[:scrt_item_id] || get_scrt_item_id(args[:scrt_id], 'publickey', token)}).hash
+        response = @@client.call(:download_file_attachment_by_item_id, message: { token: token, secretId: args[:scrt_id], secretItemId: args[:scrt_item_id] || get_scrt_item_id(args[:scrt_id], 'Public Key', token)}).hash
         if response[:envelope][:body][:download_file_attachment_by_item_id_response][:download_file_attachment_by_item_id_result][:errors]
           raise "There was an error getting the public key for secret #{args[:scrt_id]}: #{response[:envelope][:body][:download_file_attachment_by_item_id_response][:download_file_attachment_by_item_id_result][:string]}"
       end
@@ -194,7 +195,7 @@ module Zanzibar
       FileUtils.mkdir_p(args[:path]) if args[:path]
       path = args[:path] ? args[:path] : '.' ## The File.join below doesn't handle nils well, so let's take that possibility away.
       begin
-        response = @@client.call(:download_file_attachment_by_item_id, message: { token: token, secretId: args[:scrt_id], secretItemId: args[:scrt_item_id] || get_scrt_item_id(args[:scrt_id], 'attachment', token)}).hash
+        response = @@client.call(:download_file_attachment_by_item_id, message: { token: token, secretId: args[:scrt_id], secretItemId: args[:scrt_item_id] || get_scrt_item_id(args[:scrt_id], 'Attachment', token)}).hash
         if response[:envelope][:body][:download_file_attachment_by_item_id_response][:download_file_attachment_by_item_id_result][:errors]
           raise "There was an error getting the attachment for secret #{args[:scrt_id]}: #{response[:envelope][:body][:download_file_attachment_by_item_id_response][:download_file_attachment_by_item_id_result][:string]}"
       end
