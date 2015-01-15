@@ -1,4 +1,4 @@
-require '../lib/zanzibar.rb'
+require 'zanzibar'
 require 'savon'
 require 'webmock'
 require 'rspec'
@@ -8,14 +8,14 @@ include WebMock::API
 
 describe "Zanzibar Test" do
 
-  client = Zanzibar::Zanzibar.new(:domain => "zanzitest.net", :pwd=>'password', :wsdl => "scrt.wsdl")
-  auth_xml = File.read('responses/authenticate_response.xml')
-  secret_xml = File.read('responses/get_secret_response.xml')
-  secret_with_key_xml = File.read('responses/get_secret_with_keys_response.xml')
-  secret_with_attachment_xml = File.read('responses/get_secret_with_attachment_response.xml')
-  private_key_xml = File.read('responses/download_private_key_response.xml')
-  public_key_xml = File.read('responses/download_public_key_response.xml')
-  attachment_xml = File.read('responses/attachment_response.xml')
+  client = Zanzibar::Zanzibar.new(:domain => "zanzitest.net", :pwd=>'password', :wsdl => "spec/scrt.wsdl")
+  auth_xml = File.read('spec/responses/authenticate_response.xml')
+  secret_xml = File.read('spec/responses/get_secret_response.xml')
+  secret_with_key_xml = File.read('spec/responses/get_secret_with_keys_response.xml')
+  secret_with_attachment_xml = File.read('spec/responses/get_secret_with_attachment_response.xml')
+  private_key_xml = File.read('spec/responses/download_private_key_response.xml')
+  public_key_xml = File.read('spec/responses/download_public_key_response.xml')
+  attachment_xml = File.read('spec/responses/attachment_response.xml')
 
 
   it 'should return an auth token' do

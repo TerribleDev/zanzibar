@@ -1,0 +1,70 @@
+#! ruby
+
+require 'zanzibar'
+require 'optparse'
+
+options = {
+  :domain => 'local'
+}
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: zamioculcas -d domain [-w wsdl] [-k] [-p] [secret_id]"
+
+  opts.on("-d", "--domain DOMAIN", "Specify domain") do |v|
+    options[:domain] = v
+  end
+
+  opts.on("-w", "--wsdl WSDL", "Specify WSDL location") do |v|
+    options[:wsdl] = v
+  end
+
+  opts.on("-s", "--server SERVER", "Secret server hostname or IP") do |v|
+    options[:server] = v
+  end
+
+  opts.on("-k", "--no-check-certificate", "Don't run SSL certificate checks") do |v|
+    options[:globals] = {:ssl_verify_mode => :none}
+  end
+
+  opts.on("-p", "--password PASSWORD", "Specify password") do |v|
+    options[:pwd] = v
+  end
+
+  opts.on("-t", "--type TYPE", "Specify the type of secret") do |v|
+    options[:type] = v
+  end
+
+  opts.on("-u", "--user USER", "Specify the username") do |v|
+    options[:username] = v
+  end
+  
+end.parse!
+
+raise OptionParser::MissingArgument if options[:server].nil?
+options[:type] = "password" if options[:type].nil?
+
+unless STDIN.tty? || options[:pwd]
+  options[:pwd] = $stdin.read.strip
+end
+
+secret_id = Integer(ARGV.pop)
+if(!secret_id)
+  fail "no secret!"
+end
+
+unless options[:wsdl] || options[:server].nil?
+  options[:wsdl] = "https://#{options[:server]}/webservices/sswebservice.asmx?wsdl"
+end
+
+scrt = Zanzibar::Zanzibar.new(options)
+
+case options[:type]
+when "password"
+  $stdout.write "#{scrt.get_password(secret_id)}\n"
+when "privatekey"
+  scrt.download_private_key(:scrt_id=>secret_id)
+when "publickey"
+  scrt.download_public_key(:scrt_id=>secret_id)
+else
+  $stderr.write "#{options[:type]} is not a known type."
+end
