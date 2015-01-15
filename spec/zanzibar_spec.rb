@@ -47,7 +47,7 @@ describe "Zanzibar Test" do
           to_return(:body => secret_with_key_xml, :status => 200).then.
             to_return(:body => private_key_xml, :status => 200)
 
-      client.download_private_key(:scrt_id => 2345)
+      client.download_secret_file(:scrt_id => 2345, :type => 'Private Key')
       expect(File.exist? 'zanzi_key')
       expect(File.read('zanzi_key')).to eq("-----BEGIN RSA PRIVATE KEY -----\nzanzibarTestPassword\n-----END RSA PRIVATE KEY-----\n")
       File.delete('zanzi_key')
@@ -60,7 +60,7 @@ describe "Zanzibar Test" do
           to_return(:body => secret_with_key_xml, :status => 200).then.
             to_return(:body => public_key_xml, :status => 200)
 
-      client.download_public_key(:scrt_id => 2345)
+      client.download_secret_file(:scrt_id => 2345, :type => 'Public Key')
       expect(File.exist? 'zanzi_key.pub')
       expect(File.read('zanzi_key.pub')).to eq("1234PublicKey5678==\n")
       File.delete('zanzi_key.pub')
@@ -72,7 +72,7 @@ describe "Zanzibar Test" do
           to_return(:body => secret_with_attachment_xml, :status => 200).then.
             to_return(:body => attachment_xml, :status => 200)
 
-    client.download_attachment(:scrt_id => 3456)
+    client.download_secret_file(:scrt_id => 3456, :type => 'Attachment')
     expect(File.exist? 'attachment.txt')
     expect(File.read('attachment.txt')).to eq("I am a secret attachment\n")
     File.delete('attachment.txt')

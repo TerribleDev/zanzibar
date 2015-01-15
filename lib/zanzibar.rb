@@ -146,54 +146,21 @@ module Zanzibar
       end
     end
 
-    ## Downloads the private key for a secret and places it where Zanzibar is running, or :path if specified
+    ## Downloads a file for a secret and places it where Zanzibar is running, or :path if specified
     # Raise on error
-    # @param [Hash] args, :scrt_id, :scrt_item_id - optional, :path - optional
+    # @param [Hash] args, :scrt_id, :type (one of "Private Key", "Public Key", "Attachment"), :scrt_item_id - optional, :path - optional
 
-    def download_private_key(args = {})
+
+    def download_secret_file(args = {})
       token = get_token
       FileUtils.mkdir_p(args[:path]) if args[:path]
       path = args[:path] ? args[:path] : '.' ## The File.join below doesn't handle nils well, so let's take that possibility away.
       begin
-        response = @@client.call(:download_file_attachment_by_item_id, message: { token: token, secretId: args[:scrt_id], secretItemId: args[:scrt_item_id] || get_scrt_item_id(args[:scrt_id], 'Private Key', token)}).hash[:envelope][:body][:download_file_attachment_by_item_id_response][:download_file_attachment_by_item_id_result]
-        raise "There was an error getting the private key for secret #{args[:scrt_id]}: #{response[:errors][:string]}"  if response[:errors]
+        response = @@client.call(:download_file_attachment_by_item_id, message: { token: token, secretId: args[:scrt_id], secretItemId: args[:scrt_item_id] || get_scrt_item_id(args[:scrt_id], args[:type], token)}).hash[:envelope][:body][:download_file_attachment_by_item_id_response][:download_file_attachment_by_item_id_result]
+        raise "There was an error getting the #{args[:type]} for secret #{args[:scrt_id]}: #{response[:errors][:string]}"  if response[:errors]
         write_secret_to_file(path, response)
       rescue Savon::Error => err
-        raise "There was an error getting the private key for secret #{args[:scrt_id]}: #{err}"
-      end
-    end
-
-    ## Downloads the public key for a secret and places it where Zanzibar is running, or :path if specified
-    # Raise on error
-    # @param [Hash] args, :scrt_id, :scrt_item_id - optional, :path - optional
-
-    def download_public_key(args = {})
-      token = get_token
-      FileUtils.mkdir_p(args[:path]) if args[:path]
-      path = args[:path] ? args[:path] : '.' ## The File.join below doesn't handle nils well, so let's take that possibility away.
-      begin
-        response = @@client.call(:download_file_attachment_by_item_id, message: { token: token, secretId: args[:scrt_id], secretItemId: args[:scrt_item_id] || get_scrt_item_id(args[:scrt_id], 'Public Key', token)}).hash[:envelope][:body][:download_file_attachment_by_item_id_response][:download_file_attachment_by_item_id_result]
-        raise "There was an error getting the public key for secret #{args[:scrt_id]}: #{response[:errors][:string]}"  if response[:errors]
-        write_secret_to_file(path, response)
-      rescue Savon::Error => err
-        raise "There was an error getting the public key for secret #{args[:scrt_id]}: #{err}"
-      end
-    end
-
-    ## Downloads an attachment for a secret and places it where Zanzibar is running, or :path if specified
-    # Raise on error
-    # @param [Hash] args, :scrt_id, :scrt_item_id - optional, :path - optional
-
-    def download_attachment(args = {})
-      token = get_token
-      FileUtils.mkdir_p(args[:path]) if args[:path]
-      path = args[:path] ? args[:path] : '.' ## The File.join below doesn't handle nils well, so let's take that possibility away.
-      begin
-        response = @@client.call(:download_file_attachment_by_item_id, message: { token: token, secretId: args[:scrt_id], secretItemId: args[:scrt_item_id] || get_scrt_item_id(args[:scrt_id], 'Attachment', token)}).hash[:envelope][:body][:download_file_attachment_by_item_id_response][:download_file_attachment_by_item_id_result]
-        raise "There was an error getting the attachment for secret #{args[:scrt_id]}: #{response[:errors][:string]}"  if response[:errors]
-        write_secret_to_file(path, response)
-      rescue Savon::Error => err
-        raise "There was an error getting the attachment from secret #{args[:scrt_id]}: #{err}"
+        raise "There was an error getting the #{args[:type]} for secret #{args[:scrt_id]}: #{err}"
       end
     end
   end
