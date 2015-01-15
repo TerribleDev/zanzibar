@@ -80,7 +80,8 @@ module Zanzibar
 
     def get_token
       begin
-        response = @@client.call(:authenticate, message: { username: @@username, password: @@password, organization: "", domain: @@domain }).hash[:envelope][:body][:authenticate_response][:authenticate_result]
+        response = @@client.call(:authenticate, message: { username: @@username, password: @@password, organization: "", domain: @@domain })
+          .hash[:envelope][:body][:authenticate_response][:authenticate_result]
         raise "Error generating the authentication token for user #{@@username}: #{response[:errors][:string]}"  if response[:errors]
         response[:token]
       rescue Savon::Error => err
@@ -156,12 +157,32 @@ module Zanzibar
       FileUtils.mkdir_p(args[:path]) if args[:path]
       path = args[:path] ? args[:path] : '.' ## The File.join below doesn't handle nils well, so let's take that possibility away.
       begin
-        response = @@client.call(:download_file_attachment_by_item_id, message: { token: token, secretId: args[:scrt_id], secretItemId: args[:scrt_item_id] || get_scrt_item_id(args[:scrt_id], args[:type], token)}).hash[:envelope][:body][:download_file_attachment_by_item_id_response][:download_file_attachment_by_item_id_result]
+        response = @@client.call(:download_file_attachment_by_item_id, message:
+          { token: token, secretId: args[:scrt_id], secretItemId: args[:scrt_item_id] || get_scrt_item_id(args[:scrt_id], args[:type], token)})
+            .hash[:envelope][:body][:download_file_attachment_by_item_id_response][:download_file_attachment_by_item_id_result]
         raise "There was an error getting the #{args[:type]} for secret #{args[:scrt_id]}: #{response[:errors][:string]}"  if response[:errors]
         write_secret_to_file(path, response)
       rescue Savon::Error => err
         raise "There was an error getting the #{args[:type]} for secret #{args[:scrt_id]}: #{err}"
       end
     end
+
+
+    ## Methods to maintain backwards compatibility
+    def download_private_key(args = {})
+      args[:type] = 'Private Key'
+      download_secret_file(args)
+    end
+
+    def download_public_key(args = {})
+      args[:type] = 'Public Key'
+      download_secret_file(args)
+    end
+
+    def download_attachment(args = {})
+      args[:type] = 'Attachment'
+      download_secret_file(args)
+    end
+
   end
 end
