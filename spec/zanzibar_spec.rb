@@ -30,7 +30,7 @@ describe "Zanzibar Test" do
       to_return(:body => auth_xml, :status => 200).then.
         to_return(:body => secret_xml, :status => 200)
 
-    expect(client.get_secret(1234)[:envelope][:body][:get_secret_response][:get_secret_result][:secret][:name]).to eq("Zanzi Test Secret")
+    expect(client.get_secret(1234)[:secret][:name]).to eq("Zanzi Test Secret")
   end
 
   it 'should get a password' do
