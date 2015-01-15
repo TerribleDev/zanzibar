@@ -6,8 +6,3 @@ require 'zanzibar/version'
 task :default => [:test]
 
 RSpec::Core::RakeTask.new(:test)
-
-task :install_local do
-  system "rake build"
-  system "gem install ./pkg/zanzibar-#{Zanzibar::VERSION}.gem"
-end
