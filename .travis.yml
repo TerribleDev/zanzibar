@@ -6,3 +6,11 @@ addons:
   code_climate:
     repo_token:
       secure: "XbKXMtcF/NnFr9JMuJNRzgsUcDcHxGi5jVc2B4HGT4EHDUnOV/06SfTTJMiLz3hgIgH1dpEgt+4cjAzAmZrmZrViY3rOH0MU1f6eAF4+BPMb0JwKYnPxTyPF5RjsWf0aFe6JdYM1S1T7EpP2XUAlV9ppmCYKrYUEa/OAXsz4ruU="
+deploy:
+  provider: rubygems
+  api_key:
+    secure: "CFXaOgtLypVc3/Nn3NFyeTYJ3rR/KNua2FPFHc02h5K/TPm8PMlHsYEB3e9OpithnC5cLqPUUlyZL4Gz7QC4zxX0G4luNVz+ZXdueMk1GBstK9QMsrjOQMKnQTCPaK/3x2/53kuPWMjYSyn5+ICkf/Omq1EVD4YEplhSvIRA9QQ="
+  gem: zanzibar
+  on:
+    tags: true
+    all_branches: true
