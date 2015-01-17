@@ -53,14 +53,14 @@ secrets.download_secret_file(:scrt_id => 2345, :path => 'secrets/', :type => "At
 
 ### Command Line
 
-Zanzibar comes bundled with the [`zamioculcas`](http://en.wikipedia.org/wiki/Zamioculcas) command-line utility that can be used for fetching passwords and downloading keys from outside of Ruby.
+Zanzibar comes bundled with the `zanzibar` command-line utility that can be used for fetching passwords and downloading keys from outside of Ruby.
 
-`Zamioculcas` supports most actions provided by Zanzibar itself. Because it operates on the command-line, it can be used as part of a pipeline or within a bash script.
+`zanzibar` supports most actions provided by Zanzibar itself. Because it operates on the command-line, it can be used as part of a pipeline or within a bash script.
 
 ```bash
 # if you don't pipe in a password, you will be prompted to enter one.
 # this will download the private key from secret 1984 to the current directory
-cat ./local-password | zamioculcas 1984 -s server.example.com -d example.com -t privatekey
+cat ./local-password | zanzibar 1984 -s server.example.com -d example.com -t privatekey
 
 ssh user@someremote -i ./private_key
 ```
