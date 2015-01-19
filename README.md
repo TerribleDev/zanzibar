@@ -38,29 +38,29 @@ secrets = Zanzibar::Zanzibar.new(:domain => 'mydomain.net', :wsdl => "https://my
 # Zanzibar::Zanzibar.new(:domain => 'mydomain.net', :wsdl => "https://my.scrt.server/webservices/sswebservice.asmx?wsdl", :globals => {:ssl_verify_mode => :none})
 
 ## Simple password -> takes secret id as argument
-secrets.get_secret(1234)
+secrets.get_password(1234)
 
-## Private Key -> takes hash as argument, requires :scrt_id, optional :scrt_item_id, :path
-secrets.download_private_key(:scrt_id => 2345, :path => 'secrets/')
+## Private Key -> takes hash as argument, requires :scrt_id, :type, optional :scrt_item_id, :path
+secrets.download_secret_file(:scrt_id => 2345, :path => 'secrets/', :type => "Private Key")
 
-## Public Key -> takes hash as argument, requires :scrt_id, optional :scrt_item_id, :path
-secrets.download_public_key(:scrt_id => 2345, :path => 'secrets/')
+## Public Key -> takes hash as argument, requires :scrt_id, :type, optional :scrt_item_id, :path
+secrets.download_secret_file(:scrt_id => 2345, :path => 'secrets/', :type => "Public Key")
 
-## Attachment; only supports secrets with single attachment -> takes hash as argument, requires :scrt_id, optional :scrt_item_id, :path
-secrets.download_attachment(:scrt_id => 3456, :path => 'secrets/')
+## Attachment; only supports secrets with single attachment -> takes hash as argument, requires :scrt_id, :path, optional :scrt_item_id, :path
+secrets.download_secret_file(:scrt_id => 2345, :path => 'secrets/', :type => "Attachment")
 
 ```
 
 ### Command Line
 
-Zanzibar comes bundled with the [`zamioculcas`](http://en.wikipedia.org/wiki/Zamioculcas) command-line utility that can be used for fetching passwords and downloading keys from outside of Ruby.
+Zanzibar comes bundled with the `zanzibar` command-line utility that can be used for fetching passwords and downloading keys from outside of Ruby.
 
-`Zamioculcas` supports most actions provided by Zanzibar itself. Because it operates on the command-line, it can be used as part of a pipeline or within a bash script.
+`zanzibar` supports most actions provided by Zanzibar itself. Because it operates on the command-line, it can be used as part of a pipeline or within a bash script.
 
 ```bash
 # if you don't pipe in a password, you will be prompted to enter one.
 # this will download the private key from secret 1984 to the current directory
-cat ./local-password | zamioculcas 1984 -s server.example.com -d example.com -t privatekey
+cat ./local-password | zanzibar 1984 -s server.example.com -d example.com -t privatekey
 
 ssh user@someremote -i ./private_key
 ```
