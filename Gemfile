@@ -7,8 +7,9 @@ group :test do
   gem 'savon_spec'
   gem 'rspec'
   gem 'webmock'
-  gem "codeclimate-test-reporter"
+  gem 'codeclimate-test-reporter'
   gem 'zanzibar', path: '.'
+  gem 'rubocop'
 end
 
 # Specify your gem's dependencies in zanzibar.gemspec
