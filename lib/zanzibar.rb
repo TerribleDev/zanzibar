@@ -151,6 +151,7 @@ module Zanzibar
                    .hash[:envelope][:body][:download_file_attachment_by_item_id_response][:download_file_attachment_by_item_id_result]
         fail "There was an error getting the #{args[:type]} for secret #{args[:scrt_id]}: #{response[:errors][:string]}"  if response[:errors]
         write_secret_to_file(path, response)
+        return File.join(path, response[:file_name])
       rescue Savon::Error => err
         raise "There was an error getting the #{args[:type]} for secret #{args[:scrt_id]}: #{err}"
       end
