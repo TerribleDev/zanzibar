@@ -13,6 +13,8 @@ module Zanzibar
     def initialize(args = {})
       if args[:username]
         @@username = args[:username]
+      elsif ENV['ZANZIBAR_USER']
+        @@username = ENV['ZANZIBAR_USER']
       else
         @@username = ENV['USER']
       end
@@ -22,11 +24,15 @@ module Zanzibar
       else
         @@wsdl = get_wsdl_location
       end
+
       if args[:pwd]
         @@password = args[:pwd]
+      elsif ENV['ZANZIBAR_PASSWORD']
+        @@password = ENV['ZANZIBAR_PASSWORD']
       else
         @@password = prompt_for_password
       end
+
       if args[:domain]
         @@domain = args[:domain]
       else
@@ -34,6 +40,14 @@ module Zanzibar
       end
       args[:globals] = {} unless args[:globals]
       init_client(args[:globals])
+    end
+
+    def get_client_username
+      @@username
+    end
+
+    def get_client_password
+      @@password
     end
 
     ## Initializes the Savon client class variable with the wdsl document location and optional global variables

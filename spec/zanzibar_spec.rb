@@ -110,4 +110,14 @@ describe 'Zanzibar Test' do
     expect(File.read('attachment.txt')).to eq("I am a secret attachment\n")
     File.delete('attachment.txt')
   end
+
+  it 'should use environment variables for credentials' do
+    ENV['ZANZIBAR_USER'] = "environment_user"
+    ENV['ZANZIBAR_PASSWORD'] = "environment_password"
+    client = Zanzibar::Zanzibar.new(domain: 'zanzitest.net', wsdl: 'spec/scrt.wsdl')
+    expect(client.get_client_username).to eq(ENV['ZANZIBAR_USER'])
+    expect(client.get_client_password).to eq(ENV['ZANZIBAR_PASSWORD'])
+    ENV.delete 'ZANZIBAR_PASSWORD'
+    ENV.delete 'ZANZIBAR_USER'
+  end
 end
