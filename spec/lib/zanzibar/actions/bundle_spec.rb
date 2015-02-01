@@ -1,4 +1,5 @@
 require 'zanzibar/cli'
+require 'zanzibar/defaults'
 require 'rspec'
 require 'fakefs/spec_helpers'
 require 'webmock'
@@ -39,8 +40,8 @@ describe Zanzibar::Cli do
       end
 
       it 'should have a Zanzifile' do
-        expect(FakeFS::FileTest.file? File.join(source_root, 'spec', 'files', 'Zanzifile')).to be(true)
-        expect(File.read(File.join(source_root, 'spec', 'files', 'Zanzifile'))).to include('zanzitest')
+        expect(FakeFS::FileTest.file? Zanzibar::ZANZIFILE_NAME).to be(true)
+        expect(File.read(Zanzibar::ZANZIFILE_NAME)).to include('zanzitest')
       end
 
       it 'should download a file' do
@@ -50,9 +51,9 @@ describe Zanzibar::Cli do
       end
 
       it 'should create a resolved file' do
-        expect(FakeFS::FileTest.file? 'Zanzifile.resolved').to be(false)
+        expect(FakeFS::FileTest.file? Zanzibar::RESOLVED_NAME).to be(false)
         expect { subject.bundle }.to output(/Finished downloading secrets/).to_stdout
-        expect(FakeFS::FileTest.file? 'Zanzifile.resolved').to be(true)
+        expect(FakeFS::FileTest.file? Zanzibar::RESOLVED_NAME).to be(true)
       end
 
       it 'should not redownload files it already has' do
