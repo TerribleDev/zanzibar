@@ -1,0 +1,11 @@
+---
+settings:
+  wsdl: scrt.wsdl
+  domain: zanzitest.net
+  secret_dir: secrets/
+  ignore_ssl: true
+secrets:
+secrets:
+  ssh_key:
+    id: 2345
+    label: Private Key
