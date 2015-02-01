@@ -1,2 +1,4 @@
 #! ruby
-system("zanzibar #{ARGV.join(" ")}")
+require 'zanzibar/cli'
+
+Zanzibar::Cli.start(ARGV)
