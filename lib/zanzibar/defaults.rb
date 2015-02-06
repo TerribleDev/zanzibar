@@ -1,4 +1,4 @@
-include 'pathname'
+require 'pathname'
 
 # Definitions for various strings used throughout the gem
 module Zanzibar
