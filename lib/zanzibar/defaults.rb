@@ -1,3 +1,5 @@
+include 'pathname'
+
 # Definitions for various strings used throughout the gem
 module Zanzibar
   APPLICATION_NAME = Pathname.new($PROGRAM_NAME).basename
