@@ -110,7 +110,7 @@ module Zanzibar
       raise "There was an error getting the secret with id #{scrt_id}: #{err}"
     end
 
-    ## Retrieve a simple password from a secret
+    ## Retrieve a simple password from a secret, and save it to a file if requested
     # Will raise an error if there are any issues
     # @param [Integer] the secret id
     # @return [String] the password for the given secret
@@ -123,9 +123,23 @@ module Zanzibar
       raise "There was an error getting the password for secret #{scrt_id}: #{err}"
     end
 
+    ## Get the password, save it to a file, and return the path to the file.
+    def get_password_and_save(scrt_id, path, name)
+      password = get_password(scrt_id)
+      save_password_to_file(password, path, name)
+      return File.join(path, name)
+    end
+
     def write_secret_to_file(path, secret_response)
       File.open(File.join(path, secret_response[:file_name]), 'wb') do |file|
         file.puts Base64.decode64(secret_response[:file_attachment])
+      end
+    end
+
+    ## Write the password to a file. Intended for use with a Zanzifile
+    def save_password_to_file(password, path, name)
+      File.open(File.join(path, name), 'wb') do |file|
+        file.puts password
       end
     end
 

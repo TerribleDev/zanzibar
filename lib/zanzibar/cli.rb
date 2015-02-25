@@ -53,6 +53,7 @@ module Zanzibar
     end
 
     desc 'plunder', "Alias to `#{APPLICATION_NAME} bundle`", :hide => true
+    option 'verbose', type: :boolean, default: false, aliases: :v
     alias_method :plunder, :bundle
 
     desc 'install', "Alias to `#{APPLICATION_NAME} bundle`"
