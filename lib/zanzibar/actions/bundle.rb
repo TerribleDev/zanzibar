@@ -99,7 +99,7 @@ module Zanzibar
 
       def download_one_secret(scrt_id, label, path, args, name = nil)
         if label == 'Password'
-          path = zanzibar(args).get_password_and_save(scrt_id, path, name)
+          path = zanzibar(args).get_username_and_password_and_save(scrt_id, path, name)
           { path: path, hash: Digest::MD5.file(path).hexdigest }
         else
           path = zanzibar(args).download_secret_file(scrt_id: scrt_id,
