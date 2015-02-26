@@ -111,7 +111,7 @@ describe 'Zanzibar Test' do
 
       client.get_password_and_save(1234, '.', 'zanziTestPassword')
       expect(File.exist? 'zanziTestPassword')
-      expect(File.read('zanziTestPassword')).to eq(Base64.strict_encode64('zanziUserPassword'))
+      expect(File.read('zanziTestPassword')).to eq('zanziUserPassword')
       File.delete('zanziTestPassword')
   end
 

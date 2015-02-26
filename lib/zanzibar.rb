@@ -139,7 +139,7 @@ module Zanzibar
     ## Write the password to a file. Intended for use with a Zanzifile
     def save_password_to_file(password, path, name)
       File.open(File.join(path, name), 'wb') do |file|
-        file.print Base64.strict_encode64(password)
+        file.print password
       end
     end
 
