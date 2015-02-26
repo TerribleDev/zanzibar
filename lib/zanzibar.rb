@@ -2,6 +2,7 @@ require 'zanzibar/version'
 require 'savon'
 require 'io/console'
 require 'fileutils'
+require 'yaml'
 
 module Zanzibar
   ##
@@ -123,9 +124,26 @@ module Zanzibar
       raise "There was an error getting the password for secret #{scrt_id}: #{err}"
     end
 
+    ## Get the password, save it to a file, and return the path to the file.
+    def get_username_and_password_and_save(scrt_id, path, name)
+      secret_items = get_secret(scrt_id)[:secret][:items][:secret_item]
+      password = get_secret_item_by_field_name(secret_items, 'Password')[:value]
+      username = get_secret_item_by_field_name(secret_items, 'Username')[:value]
+      save_username_and_password_to_file(password, username, path, name)
+      return File.join(path, name)
+    end
+
     def write_secret_to_file(path, secret_response)
       File.open(File.join(path, secret_response[:file_name]), 'wb') do |file|
         file.puts Base64.decode64(secret_response[:file_attachment])
+      end
+    end
+
+    ## Write the password to a file. Intended for use with a Zanzifile
+    def save_username_and_password_to_file(password, username, path, name)
+      user_pass = {'username' => username.to_s, 'password' => password.to_s}.to_yaml
+      File.open(File.join(path, name), 'wb') do |file|
+        file.print user_pass
       end
     end
 

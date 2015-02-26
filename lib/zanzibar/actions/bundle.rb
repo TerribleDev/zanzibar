@@ -20,6 +20,7 @@ module Zanzibar
       def run
         ensure_zanzifile
         load_required_secrets
+        ensure_secrets_path
         validate_environment
         load_resolved_secrets if resolved_file?
         validate_local_secrets unless @update
@@ -40,6 +41,10 @@ module Zanzibar
       def ensure_zanzifile
         fail Error, NO_ZANZIFILE_ERROR unless File.exist? ZANZIFILE_NAME
         debug { "#{ZANZIFILE_NAME} located..." }
+      end
+
+      def ensure_secrets_path
+        FileUtils.mkdir_p(@settings['secret_dir']) unless @settings['secret_dir'] == nil
       end
 
       def resolved_file?
@@ -83,20 +88,25 @@ module Zanzibar
           downloaded_secrets[key] = download_one_secret(secret['id'],
                                                         secret['label'],
                                                         @settings['secret_dir'],
-                                                        args)
+                                                        args,
+                                                        secret['name'] || "#{secret['id']}_password")
 
-          debug { "Downloaded secret: #{key} to #{path}..." }
+          debug { "Downloaded secret: #{key} to #{@settings['secret_dir']}..." }
         end
 
         downloaded_secrets
       end
 
-      def download_one_secret(scrt_id, label, path, args)
-        path = zanzibar(args).download_secret_file(scrt_id: scrt_id,
+      def download_one_secret(scrt_id, label, path, args, name = nil)
+        if label == 'Password'
+          path = zanzibar(args).get_username_and_password_and_save(scrt_id, path, name)
+          { path: path, hash: Digest::MD5.file(path).hexdigest }
+        else
+          path = zanzibar(args).download_secret_file(scrt_id: scrt_id,
                                                    type: label,
                                                    path: path)
-
-        { path: path, hash: Digest::MD5.file(path).hexdigest }
+          { path: path, hash: Digest::MD5.file(path).hexdigest }
+        end
       end
 
       def update_resolved_file(new_secrets)

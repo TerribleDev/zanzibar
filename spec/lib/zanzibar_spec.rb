@@ -104,6 +104,17 @@ describe 'Zanzibar Test' do
     File.delete('attachment.txt')
   end
 
+  it 'should save credentials to a file' do
+    stub_request(:any, 'https://www.zanzitest.net/webservices/sswebservice.asmx')
+      .to_return(body: AUTH_XML, status: 200).then
+      .to_return(body: SECRET_XML, status: 200)
+
+      client.get_username_and_password_and_save(1234, '.', 'zanziTestCreds')
+      expect(File.exist? 'zanziTestCreds')
+      expect(File.read('zanziTestCreds')).to eq({'username' => 'ZanziUser', 'password' => 'zanziUserPassword'}.to_yaml)
+      File.delete('zanziTestCreds')
+  end
+
   it 'should use environment variables for credentials' do
     ENV['ZANZIBAR_USER'] = 'environment_user'
     ENV['ZANZIBAR_PASSWORD'] = 'environment_password'
