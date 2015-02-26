@@ -110,7 +110,7 @@ module Zanzibar
       raise "There was an error getting the secret with id #{scrt_id}: #{err}"
     end
 
-    ## Retrieve a simple password from a secret, and save it to a file if requested
+    ## Retrieve a simple password from a secret
     # Will raise an error if there are any issues
     # @param [Integer] the secret id
     # @return [String] the password for the given secret
