@@ -44,7 +44,7 @@ module Zanzibar
       end
 
       def ensure_secrets_path
-        FileUtils.mkdir_p(@settings['secret_dir'])
+        FileUtils.mkdir_p(@settings['secret_dir']) unless @settings['secret_dir'] == nil
       end
 
       def resolved_file?
@@ -85,14 +85,13 @@ module Zanzibar
 
         downloaded_secrets = {}
         remote_secrets.each do |key, secret|
-          puts "Downloading #{key} - #{secret['id']}"
           downloaded_secrets[key] = download_one_secret(secret['id'],
                                                         secret['label'],
                                                         @settings['secret_dir'],
                                                         args,
                                                         secret['name'] || "#{secret['id']}_password")
 
-          debug { "Downloaded secret: #{key} to #{secret['path']}..." }
+          debug { "Downloaded secret: #{key} to #{@settings['secret_dir']}..." }
         end
 
         downloaded_secrets
