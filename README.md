@@ -106,7 +106,7 @@ Sample `Zanzifile`:
 ```yaml
 ---
 settings:
-  wsdl: my.scrt.srvr.com/webservices/sswebservice.asmx?wdsl
+  wsdl: my.scrt.srvr.com/webservices/sswebservice.asmx?wsdl
   domain: my.domain.net
   secret_dir: secrets/
   ignore_ssl: true
