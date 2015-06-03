@@ -48,8 +48,8 @@ module Zanzibar
         if @settings['secret_dir']
           FileUtils.mkdir_p(@settings['secret_dir'])
           File.open("#{@settings['secret_dir']}/.gitignore", 'w') do |file|
-            file.write '*'
-            file.write '!.gitignore'
+            file.puts '*'
+            file.puts '!.gitignore'
           end
         end
       end
