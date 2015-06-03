@@ -44,7 +44,14 @@ module Zanzibar
       end
 
       def ensure_secrets_path
-        FileUtils.mkdir_p(@settings['secret_dir']) unless @settings['secret_dir'] == nil
+        ## Make sure the directory exists and that a .gitignore is there to ignore it
+        if @settings['secret_dir']
+          FileUtils.mkdir_p(@settings['secret_dir'])
+          File.open("#{@settings['secret_dir']}/.gitignore", 'w') do |file|
+            file.puts '*'
+            file.puts '!.gitignore'
+          end
+        end
       end
 
       def resolved_file?
