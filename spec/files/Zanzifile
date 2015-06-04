@@ -9,3 +9,7 @@ secrets:
   ssh_key:
     id: 2345
     label: Private Key
+  prefix_ssh_key:
+    id: 2345
+    label: Private Key
+    prefix: ssh

@@ -50,6 +50,12 @@ describe Zanzibar::Cli do
         expect(FakeFS::FileTest.file? File.join('secrets', 'zanzi_key')).to be(true)
       end
 
+      it 'should download a file to a prefix' do
+        expect(FakeFS::FileTest.file? File.join('secrets/ssh', 'zanzi_key')).to be(false)
+        expect { subject.bundle }.to output(/Finished downloading secrets/).to_stdout
+        expect(FakeFS::FileTest.file? File.join('secrets/ssh', 'zanzi_key')).to be(true)
+      end
+
       it 'should create a .gitignore' do
         expect(FakeFS::FileTest.file? File.join('secrets', '.gitignore')).to be(false)
         expect { subject.bundle }.to output(/Finished downloading secrets/).to_stdout
