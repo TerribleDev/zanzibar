@@ -24,9 +24,12 @@ describe Zanzibar::Cli do
         FakeFS::FileSystem.clone files
 
         stub_request(:any, 'https://www.zanzitest.net/webservices/sswebservice.asmx')
-          .to_return(body: AUTH_XML, status: 200).then
-          .to_return(body: SECRET_WITH_KEY_XML, status: 200).then
-          .to_return(body: PRIVATE_KEY_XML, status: 200)
+          .to_return({body: AUTH_XML, status: 200}).then
+          .to_return({body: SECRET_WITH_KEY_XML, status: 200}).then
+          .to_return({body: PRIVATE_KEY_XML, status: 200}).then
+          .to_return({body: AUTH_XML, status: 200}).then
+          .to_return({body: SECRET_WITH_KEY_XML, status: 200}).then
+          .to_return({body: PRIVATE_KEY_XML, status: 200})
 
         Dir.chdir File.join(source_root, 'spec', 'files')
       end
@@ -70,7 +73,7 @@ describe Zanzibar::Cli do
 
       it 'should not redownload files it already has' do
         expect { subject.bundle }.to output(/Finished downloading secrets/).to_stdout
-        expect(WebMock).to have_requested(:post, 'https://www.zanzitest.net/webservices/sswebservice.asmx').times(3)
+        expect(WebMock).to have_requested(:post, 'https://www.zanzitest.net/webservices/sswebservice.asmx').times(6)
 
         WebMock.reset!
 
@@ -80,16 +83,19 @@ describe Zanzibar::Cli do
 
       it 'should redownload on update action' do
         expect { subject.bundle }.to output(/Finished downloading secrets/).to_stdout
-        expect(WebMock).to have_requested(:post, 'https://www.zanzitest.net/webservices/sswebservice.asmx').times(3)
+        expect(WebMock).to have_requested(:post, 'https://www.zanzitest.net/webservices/sswebservice.asmx').times(6)
 
         WebMock.reset!
         stub_request(:any, 'https://www.zanzitest.net/webservices/sswebservice.asmx')
+          .to_return({body: AUTH_XML, status: 200}).then
+          .to_return({body: SECRET_WITH_KEY_XML, status: 200}).then
+          .to_return({body: PRIVATE_KEY_XML, status: 200}).then
           .to_return(body: AUTH_XML, status: 200).then
           .to_return(body: SECRET_WITH_KEY_XML, status: 200).then
           .to_return(body: PRIVATE_KEY_XML, status: 200)
 
         expect { subject.update }.to output(/Finished downloading secrets/).to_stdout
-        expect(WebMock).to have_requested(:post, 'https://www.zanzitest.net/webservices/sswebservice.asmx').times(3)
+        expect(WebMock).to have_requested(:post, 'https://www.zanzitest.net/webservices/sswebservice.asmx').times(6)
       end
 
       it 'should reject a malformed Zanzifile' do
