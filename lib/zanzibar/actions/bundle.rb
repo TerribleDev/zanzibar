@@ -92,9 +92,10 @@ module Zanzibar
 
         downloaded_secrets = {}
         remote_secrets.each do |key, secret|
+          full_path = secret.has_key?('prefix') ? File.join(@settings['secret_dir'], secret['prefix']) : @settings['secret_dir']
           downloaded_secrets[key] = download_one_secret(secret['id'],
                                                         secret['label'],
-                                                        @settings['secret_dir'],
+                                                        full_path,
                                                         args,
                                                         secret['name'] || "#{secret['id']}_password")
 
