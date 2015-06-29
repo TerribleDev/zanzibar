@@ -47,9 +47,11 @@ module Zanzibar
         ## Make sure the directory exists and that a .gitignore is there to ignore it
         if @settings['secret_dir']
           FileUtils.mkdir_p(@settings['secret_dir'])
-          File.open("#{@settings['secret_dir']}/.gitignore", 'w') do |file|
-            file.puts '*'
-            file.puts '!.gitignore'
+          if !File.exist? "#{@settings['secret_dir']}/.gitignore"
+            File.open("#{@settings['secret_dir']}/.gitignore", 'w') do |file|
+              file.puts '*'
+              file.puts '!.gitignore'
+            end
           end
         end
       end
