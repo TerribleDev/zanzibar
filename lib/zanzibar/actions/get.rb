@@ -26,8 +26,6 @@ module Zanzibar
       def fetch_secret(scrt_id, label = nil)
         scrt = ::Zanzibar::Zanzibar.new(@zanzibar_options)
 
-        puts @zanzibar_options
-
         if label
           scrt.download_secret_file(scrt_id: scrt_id,
                                     type: label)
