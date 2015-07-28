@@ -1,4 +1,4 @@
 # The version of the gem
 module Zanzibar
-  VERSION = '0.1.20'
+  VERSION = '0.1.21'
 end
