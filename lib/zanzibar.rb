@@ -66,8 +66,9 @@ module Zanzibar
 
     def prompt_for_password
       puts "Please enter password for #{@@username}:"
-      STDIN.noecho(&:gets).chomp
-      puts "Using password to login..."
+      STDIN.noecho(&:gets).chomp.tap do
+        puts "Using password to login..."
+      end
     end
 
     ## Gets the wsdl document location if none is provided in the constructor
