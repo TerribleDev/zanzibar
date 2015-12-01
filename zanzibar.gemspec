@@ -28,7 +28,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'fakefs', '~> 0.6.4'
   spec.add_development_dependency 'simplecov', '~> 0.9.1'
 
-  spec.add_runtime_dependency 'savon', '~> 2.8.0'
+  spec.add_runtime_dependency 'savon', '~> 2.10.0'
   spec.add_runtime_dependency 'rubyntlm', '~> 0.4.0'
   spec.add_runtime_dependency 'thor', '~> 0.19.0'
 end
