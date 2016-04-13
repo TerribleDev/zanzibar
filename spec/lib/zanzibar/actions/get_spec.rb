@@ -47,10 +47,10 @@ describe Zanzibar::Cli do
       expect { subject.get(1234) }.to raise_error.with_message(/#{Zanzibar::NO_WSDL_ERROR}/)
     end
 
-    # it 'should be able to get a field value' do
-    #   subject.options = { 'domain' => 'zanzitest.net', 'wsdl' => 'scrt.wsdl', 'fieldlabel' => 'Username' }
-    #   expect { subject.get(1234) }.to output(/ZanziUser/).to_stdout
-    # end
+    it 'should be able to get a field value' do
+      subject.options = { 'domain' => 'zanzitest.net', 'wsdl' => 'scrt.wsdl', 'fieldlabel' => 'Username' }
+      expect { subject.get(1234) }.to output(/ZanziUser/).to_stdout
+    end
 
     it 'should be able to download files' do
       WebMock.reset!
