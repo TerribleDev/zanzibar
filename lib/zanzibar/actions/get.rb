@@ -20,15 +20,17 @@ module Zanzibar
         construct_options
         ensure_options
 
-        fetch_secret(@scrt_id, options['filelabel'])
+        fetch_secret(@scrt_id, options)
       end
 
-      def fetch_secret(scrt_id, label = nil)
+      def fetch_secret(scrt_id, opts = nil)
         scrt = ::Zanzibar::Zanzibar.new(@zanzibar_options)
 
-        if label
+        if opts['filelabel']
           scrt.download_secret_file(scrt_id: scrt_id,
                                     type: label)
+        elsif opts['fieldlabel']
+          scrt.get_fieldlabel_value(scrt_id, opts['fieldlabel'])
         else
           scrt.get_password(scrt_id)
         end
