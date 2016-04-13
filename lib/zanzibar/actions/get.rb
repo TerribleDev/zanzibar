@@ -28,7 +28,7 @@ module Zanzibar
 
         if opts['filelabel']
           scrt.download_secret_file(scrt_id: scrt_id,
-                                    type: label)
+                                    type: opts['filelabel'])
         elsif opts['fieldlabel']
           scrt.get_fieldlabel_value(scrt_id, opts['fieldlabel'])
         else
