@@ -113,17 +113,25 @@ module Zanzibar
       raise "There was an error getting the secret with id #{scrt_id}: #{err}"
     end
 
-    ## Retrieve a simple password from a secret
+    ## Retrieve the value from a field label of a secret
     # Will raise an error if there are any issues
     # @param [Integer] the secret id
-    # @return [String] the password for the given secret
-
-    def get_password(scrt_id)
+    # @param [String] the field label to get, defaults to Password
+    # @return [String] the value for the given field label
+    def get_fieldlabel_value(scrt_id, fieldlabel = 'Password')
       secret = get_secret(scrt_id)
       secret_items = secret[:secret][:items][:secret_item]
-      return get_secret_item_by_field_name(secret_items, 'Password')[:value]
+      return get_secret_item_by_field_name(secret_items, fieldlabel)[:value]
     rescue Savon::Error => err
-      raise "There was an error getting the password for secret #{scrt_id}: #{err}"
+      raise "There was an error getting '#{fieldlabel}' for secret #{scrt_id}: #{err}"
+    end
+
+    ## Retrieve a simple password from a secret
+    # Calls get get_fieldlabel_value()
+    # @param [Integer] the secret id
+    # @return [String] the password for the given secret
+    def get_password(scrt_id)
+      return get_fieldlabel_value(scrt_id)
     end
 
     ## Get the password, save it to a file, and return the path to the file.

@@ -76,6 +76,8 @@ module Zanzibar
                         desc: 'Don\'t verify Secret Server\'s SSL certificate'
     option 'filelabel', type: :string, aliases: :f,
                         desc: 'Specify a file (by label) to download'
+    option 'fieldlabel', type: :string, aliases: :l,
+                         desc: 'Specify a field (by label) to get'
     option 'username', type: :string, aliases: :u
     option 'password', type: :string, aliases: :p
     def get(scrt_id)
