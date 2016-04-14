@@ -130,7 +130,6 @@ module Zanzibar
     # Calls get get_fieldlabel_value()
     # @param [Integer] the secret id
     # @return [String] the password for the given secret
-
     def get_password(scrt_id)
       return get_fieldlabel_value(scrt_id)
     end
