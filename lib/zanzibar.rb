@@ -127,7 +127,7 @@ module Zanzibar
     end
 
     ## Retrieve a simple password from a secret
-    # Calls get get_fieldlabel_value(), passing in 'Password' as the fieldlabel
+    # Calls get get_fieldlabel_value()
     # @param [Integer] the secret id
     # @return [String] the password for the given secret
 

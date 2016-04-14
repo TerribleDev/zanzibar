@@ -20,20 +20,19 @@ module Zanzibar
         construct_options
         ensure_options
 
-        fetch_secret(@scrt_id, options)
+        fetch_secret(@scrt_id)
       end
 
-      def fetch_secret(scrt_id, opts = nil)
+      def fetch_secret(scrt_id)
         scrt = ::Zanzibar::Zanzibar.new(@zanzibar_options)
 
-        if opts['filelabel']
+        if @zanzibar_options[:filelabel]
           scrt.download_secret_file(scrt_id: scrt_id,
-                                    type: opts['filelabel'])
-        elsif opts['fieldlabel']
-          scrt.get_fieldlabel_value(scrt_id, opts['fieldlabel'])
+                                    type: @zanzibar_options[:filelabel])
         else
-          scrt.get_password(scrt_id)
+          scrt.get_fieldlabel_value(scrt_id, @zanzibar_options[:fieldlabel])
         end
+
       end
 
       def construct_options
@@ -42,6 +41,8 @@ module Zanzibar
         @zanzibar_options[:domain] = options['domain']
         @zanzibar_options[:username] = options['username'] unless options['username'].nil?
         @zanzibar_options[:domain] = options['domain'] ? options['domain'] : 'local'
+        @zanzibar_options[:fieldlabel] = options['fieldlabel'] || 'Password'
+        @zanzibar_options[:filelabel] = options['filelabel'] if options['filelabel']
       end
 
       def construct_wsdl
