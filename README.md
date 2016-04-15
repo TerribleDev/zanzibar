@@ -1,5 +1,7 @@
 # Zanzibar
 [![Gem Version](https://badge.fury.io/rb/zanzibar.svg)](http://badge.fury.io/rb/zanzibar)
+[![Code Climate](https://codeclimate.com/github/Cimpress-MCP/zanzibar/badges/gpa.svg)](https://codeclimate.com/github/Cimpress-MCP/zanzibar)
+[![Test Coverage](https://codeclimate.com/github/Cimpress-MCP/zanzibar/badges/coverage.svg)](https://codeclimate.com/github/Cimpress-MCP/zanzibar/coverage)
 
 Zanzibar is a utility to retrieve secrets from a Secret Server installation. It supports retrieval of a password, public/private key, or secret attachment.
 
@@ -98,7 +100,7 @@ When it downloads a file, it gets added to `Zanzifile.resolved`. And next time
 `resolved` file, it will not attempt to re-download. `zanzibar update` will attempt
 to re-download all secrets.
 
-Subdirectories under the root directory `secret_dir` can be created for individual keys by specifying a `prefix` path for that secret. Secrets will default to be downloaded to the root `secret_dir` directory otherwise. 
+Subdirectories under the root directory `secret_dir` can be created for individual keys by specifying a `prefix` path for that secret. Secrets will default to be downloaded to the root `secret_dir` directory otherwise.
 
 Note: `zanzibar get` can fetch passwords or files, but `zanzibar bundle` can
 only operate on secret files.
