@@ -39,7 +39,7 @@ module Zanzibar
       end
 
       def ensure_zanzifile
-        fail Error, NO_ZANZIFILE_ERROR unless File.exist? ZANZIFILE_NAME
+        raise Error, NO_ZANZIFILE_ERROR unless File.exist? ZANZIFILE_NAME
         debug { "#{ZANZIFILE_NAME} located..." }
       end
 
@@ -47,7 +47,7 @@ module Zanzibar
         ## Make sure the directory exists and that a .gitignore is there to ignore it
         if @settings['secret_dir']
           FileUtils.mkdir_p(@settings['secret_dir'])
-          if !File.exist? "#{@settings['secret_dir']}/.gitignore"
+          unless File.exist? "#{@settings['secret_dir']}/.gitignore"
             File.open("#{@settings['secret_dir']}/.gitignore", 'w') do |file|
               file.puts '*'
               file.puts '!.gitignore'
@@ -69,7 +69,7 @@ module Zanzibar
 
       def validate_environment
         return unless @settings.empty? || @remote_secrets.empty?
-        fail Error, INVALID_ZANZIFILE_ERROR
+        raise Error, INVALID_ZANZIFILE_ERROR
       end
 
       def load_resolved_secrets
@@ -94,7 +94,7 @@ module Zanzibar
 
         downloaded_secrets = {}
         remote_secrets.each do |key, secret|
-          full_path = secret.has_key?('prefix') ? File.join(@settings['secret_dir'], secret['prefix']) : @settings['secret_dir']
+          full_path = secret.key?('prefix') ? File.join(@settings['secret_dir'], secret['prefix']) : @settings['secret_dir']
           downloaded_secrets[key] = download_one_secret(secret['id'],
                                                         secret['label'],
                                                         full_path,
@@ -110,13 +110,13 @@ module Zanzibar
       def download_one_secret(scrt_id, label, path, args, name = nil)
         if label == 'Password'
           path = zanzibar(args).get_username_and_password_and_save(scrt_id, path, name)
-          { path: path, hash: Digest::MD5.file(path).hexdigest }
         else
           path = zanzibar(args).download_secret_file(scrt_id: scrt_id,
-                                                   type: label,
-                                                   path: path)
-          { path: path, hash: Digest::MD5.file(path).hexdigest }
+                                                     type: label,
+                                                     path: path)
         end
+
+        { path: path, hash: Digest::MD5.file(path).hexdigest }
       end
 
       def update_resolved_file(new_secrets)

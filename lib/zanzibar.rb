@@ -12,33 +12,33 @@ module Zanzibar
     # @param args{:domain, :wsdl, :pwd, :username, :globals{}}
 
     def initialize(args = {})
-      if args[:username]
-        @@username = args[:username]
-      elsif ENV['ZANZIBAR_USER']
-        @@username = ENV['ZANZIBAR_USER']
-      else
-        @@username = ENV['USER']
-      end
+      @@username = if args[:username]
+                     args[:username]
+                   elsif ENV['ZANZIBAR_USER']
+                     ENV['ZANZIBAR_USER']
+                   else
+                     ENV['USER']
+                   end
 
-      if args[:wsdl]
-        @@wsdl = args[:wsdl]
-      else
-        @@wsdl = get_wsdl_location
-      end
+      @@wsdl = if args[:wsdl]
+                 args[:wsdl]
+               else
+                 get_wsdl_location
+               end
 
-      if args[:pwd]
-        @@password = args[:pwd]
-      elsif ENV['ZANZIBAR_PASSWORD']
-        @@password = ENV['ZANZIBAR_PASSWORD']
-      else
-        @@password = prompt_for_password
-      end
+      @@password = if args[:pwd]
+                     args[:pwd]
+                   elsif ENV['ZANZIBAR_PASSWORD']
+                     ENV['ZANZIBAR_PASSWORD']
+                   else
+                     prompt_for_password
+                   end
 
-      if args[:domain]
-        @@domain = args[:domain]
-      else
-        @@domain = prompt_for_domain
-      end
+      @@domain = if args[:domain]
+                   args[:domain]
+                 else
+                   prompt_for_domain
+                 end
       args[:globals] = {} unless args[:globals]
       init_client(args[:globals])
     end
@@ -67,7 +67,7 @@ module Zanzibar
     def prompt_for_password
       puts "Please enter password for #{@@username}:"
       STDIN.noecho(&:gets).chomp.tap do
-        puts "Using password to login..."
+        puts 'Using password to login...'
       end
     end
 
@@ -93,8 +93,8 @@ module Zanzibar
 
     def get_token
       response = @@client.call(:authenticate, message: { username: @@username, password: @@password, organization: '', domain: @@domain })
-                 .hash[:envelope][:body][:authenticate_response][:authenticate_result]
-      fail "Error generating the authentication token for user #{@@username}: #{response[:errors][:string]}"  if response[:errors]
+                         .hash[:envelope][:body][:authenticate_response][:authenticate_result]
+      raise "Error generating the authentication token for user #{@@username}: #{response[:errors][:string]}" if response[:errors]
       response[:token]
     rescue Savon::Error => err
       raise "There was an error generating the authentiaton token for user #{@@username}: #{err}"
@@ -107,7 +107,7 @@ module Zanzibar
 
     def get_secret(scrt_id, token = nil)
       secret = @@client.call(:get_secret, message: { token: token || get_token, secretId: scrt_id }).hash[:envelope][:body][:get_secret_response][:get_secret_result]
-      fail "There was an error getting secret #{scrt_id}: #{secret[:errors][:string]}" if secret[:errors]
+      raise "There was an error getting secret #{scrt_id}: #{secret[:errors][:string]}" if secret[:errors]
       return secret
     rescue Savon::Error => err
       raise "There was an error getting the secret with id #{scrt_id}: #{err}"
@@ -131,7 +131,7 @@ module Zanzibar
     # @param [Integer] the secret id
     # @return [String] the password for the given secret
     def get_password(scrt_id)
-      return get_fieldlabel_value(scrt_id)
+      get_fieldlabel_value(scrt_id)
     end
 
     ## Get the password, save it to a file, and return the path to the file.
@@ -140,7 +140,7 @@ module Zanzibar
       password = get_secret_item_by_field_name(secret_items, 'Password')[:value]
       username = get_secret_item_by_field_name(secret_items, 'Username')[:value]
       save_username_and_password_to_file(password, username, path, name)
-      return File.join(path, name)
+      File.join(path, name)
     end
 
     def write_secret_to_file(path, secret_response)
@@ -151,7 +151,7 @@ module Zanzibar
 
     ## Write the password to a file. Intended for use with a Zanzifile
     def save_username_and_password_to_file(password, username, path, name)
-      user_pass = {'username' => username.to_s, 'password' => password.to_s}.to_yaml
+      user_pass = { 'username' => username.to_s, 'password' => password.to_s }.to_yaml
       File.open(File.join(path, name), 'wb') do |file|
         file.print user_pass
       end
@@ -190,8 +190,8 @@ module Zanzibar
       begin
         response = @@client.call(:download_file_attachment_by_item_id, message:
           { token: token, secretId: args[:scrt_id], secretItemId: args[:scrt_item_id] || get_scrt_item_id(args[:scrt_id], args[:type], token) })
-                   .hash[:envelope][:body][:download_file_attachment_by_item_id_response][:download_file_attachment_by_item_id_result]
-        fail "There was an error getting the #{args[:type]} for secret #{args[:scrt_id]}: #{response[:errors][:string]}"  if response[:errors]
+                           .hash[:envelope][:body][:download_file_attachment_by_item_id_response][:download_file_attachment_by_item_id_result]
+        raise "There was an error getting the #{args[:type]} for secret #{args[:scrt_id]}: #{response[:errors][:string]}" if response[:errors]
         write_secret_to_file(path, response)
         return File.join(path, response[:file_name])
       rescue Savon::Error => err

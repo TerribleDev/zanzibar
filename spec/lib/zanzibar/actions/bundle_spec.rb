@@ -24,12 +24,12 @@ describe Zanzibar::Cli do
         FakeFS::FileSystem.clone files
 
         stub_request(:any, 'https://www.zanzitest.net/webservices/sswebservice.asmx')
-          .to_return({body: AUTH_XML, status: 200}).then
-          .to_return({body: SECRET_WITH_KEY_XML, status: 200}).then
-          .to_return({body: PRIVATE_KEY_XML, status: 200}).then
-          .to_return({body: AUTH_XML, status: 200}).then
-          .to_return({body: SECRET_WITH_KEY_XML, status: 200}).then
-          .to_return({body: PRIVATE_KEY_XML, status: 200})
+          .to_return(body: AUTH_XML, status: 200).then
+          .to_return(body: SECRET_WITH_KEY_XML, status: 200).then
+          .to_return(body: PRIVATE_KEY_XML, status: 200).then
+          .to_return(body: AUTH_XML, status: 200).then
+          .to_return(body: SECRET_WITH_KEY_XML, status: 200).then
+          .to_return(body: PRIVATE_KEY_XML, status: 200)
 
         Dir.chdir File.join(source_root, 'spec', 'files')
       end
@@ -87,9 +87,9 @@ describe Zanzibar::Cli do
 
         WebMock.reset!
         stub_request(:any, 'https://www.zanzitest.net/webservices/sswebservice.asmx')
-          .to_return({body: AUTH_XML, status: 200}).then
-          .to_return({body: SECRET_WITH_KEY_XML, status: 200}).then
-          .to_return({body: PRIVATE_KEY_XML, status: 200}).then
+          .to_return(body: AUTH_XML, status: 200).then
+          .to_return(body: SECRET_WITH_KEY_XML, status: 200).then
+          .to_return(body: PRIVATE_KEY_XML, status: 200).then
           .to_return(body: AUTH_XML, status: 200).then
           .to_return(body: SECRET_WITH_KEY_XML, status: 200).then
           .to_return(body: PRIVATE_KEY_XML, status: 200)

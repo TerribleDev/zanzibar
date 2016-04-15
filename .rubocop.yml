@@ -3,3 +3,7 @@ Metrics/ClassLength:
 
 Metrics/LineLength:
   Max: 175
+
+AllCops:
+  Exclude:
+    - 'spec/**/*'

@@ -52,12 +52,12 @@ module Zanzibar
       run_action { bundle! }
     end
 
-    desc 'plunder', "Alias to `#{APPLICATION_NAME} bundle`", :hide => true
+    desc 'plunder', "Alias to `#{APPLICATION_NAME} bundle`", hide: true
     option 'verbose', type: :boolean, default: false, aliases: :v
-    alias_method :plunder, :bundle
+    alias plunder bundle
 
     desc 'install', "Alias to `#{APPLICATION_NAME} bundle`"
-    alias_method :install, :bundle
+    alias install bundle
 
     desc 'update', "Redownload all secrets in your #{ZANZIFILE_NAME}"
     option 'verbose', type: :boolean, default: false, aliases: :v

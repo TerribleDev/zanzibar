@@ -109,10 +109,10 @@ describe 'Zanzibar Test' do
       .to_return(body: AUTH_XML, status: 200).then
       .to_return(body: SECRET_XML, status: 200)
 
-      client.get_username_and_password_and_save(1234, '.', 'zanziTestCreds')
-      expect(File.exist? 'zanziTestCreds')
-      expect(File.read('zanziTestCreds')).to eq({'username' => 'ZanziUser', 'password' => 'zanziUserPassword'}.to_yaml)
-      File.delete('zanziTestCreds')
+    client.get_username_and_password_and_save(1234, '.', 'zanziTestCreds')
+    expect(File.exist? 'zanziTestCreds')
+    expect(File.read('zanziTestCreds')).to eq({ 'username' => 'ZanziUser', 'password' => 'zanziUserPassword' }.to_yaml)
+    File.delete('zanziTestCreds')
   end
 
   it 'should use environment variables for credentials' do

@@ -17,7 +17,7 @@ module Zanzibar
 
       def check_for_zanzifile
         return unless File.exist?(ZANZIFILE_NAME) && !options['force']
-        fail Error, ALREADY_EXISTS_ERROR
+        raise Error, ALREADY_EXISTS_ERROR
       end
 
       def write_template

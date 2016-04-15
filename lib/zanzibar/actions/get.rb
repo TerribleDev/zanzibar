@@ -32,7 +32,6 @@ module Zanzibar
         else
           scrt.get_fieldlabel_value(scrt_id, @zanzibar_options[:fieldlabel])
         end
-
       end
 
       def construct_options
@@ -55,7 +54,7 @@ module Zanzibar
 
       def ensure_options
         return if @zanzibar_options[:wsdl]
-        fail Error, NO_WSDL_ERROR
+        raise Error, NO_WSDL_ERROR
       end
     end
   end
