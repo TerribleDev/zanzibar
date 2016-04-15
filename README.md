@@ -2,6 +2,7 @@
 [![Gem Version](https://badge.fury.io/rb/zanzibar.svg)](http://badge.fury.io/rb/zanzibar)
 [![Code Climate](https://codeclimate.com/github/Cimpress-MCP/zanzibar/badges/gpa.svg)](https://codeclimate.com/github/Cimpress-MCP/zanzibar)
 [![Test Coverage](https://codeclimate.com/github/Cimpress-MCP/zanzibar/badges/coverage.svg)](https://codeclimate.com/github/Cimpress-MCP/zanzibar/coverage)
+[![Dependency Status](https://gemnasium.com/badges/github.com/Cimpress-MCP/zanzibar.svg)](https://gemnasium.com/github.com/Cimpress-MCP/zanzibar)
 
 Zanzibar is a utility to retrieve secrets from a Secret Server installation. It supports retrieval of a password, public/private key, or secret attachment.
 
