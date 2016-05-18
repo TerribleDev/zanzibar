@@ -6,9 +6,11 @@ require 'yaml'
 
 module Zanzibar
   ##
-  # Class for interacting with Secret Server
+  # Class for performing low-level WSDL actions against Secret Server
   class Client
-    ## Initializes the Savon client class variable with the wdsl document location and optional global variables
+
+    ##
+    # Initializes the Savon client class variable with the wdsl document location and optional global variables
     # @param globals{}, optional
     def initialize(username, password, domain, wsdl, globals = {})
       @username = username
@@ -23,7 +25,8 @@ module Zanzibar
       end
     end
 
-    ## Get an authentication token for interacting with Secret Server. These are only good for about 10 minutes so just get a new one each time.
+    ##
+    # Get an authentication token for interacting with Secret Server. These are only good for about 10 minutes so just get a new one each time.
     # Will raise an error if there is an issue with the authentication.
     # @return the authentication token for the current user.
     def generate_token
@@ -35,7 +38,8 @@ module Zanzibar
       raise "There was an error generating the authentiaton token for user #{@username}: #{err}"
     end
 
-    ## Get a secret returned as a hash
+    ##
+    # Get a secret returned as a hash
     # Will raise an error if there was an issue getting the secret
     # @param [Integer] the secret id
     # @return [Hash] the secret hash retrieved from the wsdl
@@ -47,7 +51,8 @@ module Zanzibar
       raise "There was an error getting the secret with id #{scrt_id}: #{err}"
     end
 
-    ## Get the secret item id that relates to a key file or attachment.
+    ##
+    # Get the secret item id that relates to a key file or attachment.
     # Will raise on error
     # @param [Integer] the secret id
     # @param [String] the type of secret item to get, one of privatekey, publickey, attachment
@@ -63,6 +68,12 @@ module Zanzibar
       end
     end
 
+    ##
+    # Get an "Attachment"-type file from a secret
+    # @param [Integer] the id of the secret
+    # @param [Integer] the id of the attachment on the secret
+    # @param [String] the type of the item being downloaded
+    # @return [Hash] contents and metadata of the downloaded file
     def download_file_attachment_by_item_id(scrt_id, secret_item_id, item_type, token = nil)
       token = generate_token unless token
       @client.call(:download_file_attachment_by_item_id, message:
@@ -70,6 +81,8 @@ module Zanzibar
              .hash[:envelope][:body][:download_file_attachment_by_item_id_response][:download_file_attachment_by_item_id_result]
     end
 
+    ##
+    # Extract an item from a secret based on field name
     def get_secret_item_by_field_name(secret_items, field_name)
       secret_items.each do |item|
         return item if item[:field_name] == field_name

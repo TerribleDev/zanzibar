@@ -7,7 +7,7 @@ require 'zanzibar/client'
 
 module Zanzibar
   ##
-  # Class for interacting with Secret Server
+  # High-level operations for downloading things from Secret Server
   class Zanzibar
     ##
     # @param args{:domain, :wsdl, :pwd, :username, :globals{}}
@@ -20,7 +20,8 @@ module Zanzibar
       @client = Client.new(@username, @password, @domain, @wsdl, args[:globals])
     end
 
-    ## Gets the user's password if none is provided in the constructor.
+    ##
+    # Gets the user's password if none is provided in the constructor.
     # @return [String] the password for the current user
     def prompt_for_password
       puts "Please enter password for #{@username}:"
@@ -29,21 +30,24 @@ module Zanzibar
       end
     end
 
-    ## Gets the wsdl document location if none is provided in the constructor
+    ##
+    # Gets the wsdl document location if none is provided in the constructor
     # @return [String] the location of the WDSL document
     def prompt_for_wsdl_location
       puts 'Enter the URL of the Secret Server WSDL:'
       STDIN.gets.chomp
     end
 
-    ## Gets the domain of the Secret Server installation if none is provided in the constructor
+    ##
+    # Gets the domain of the Secret Server installation if none is provided in the constructor
     # @return [String] the domain of the secret server installation
     def prompt_for_domain
       puts 'Enter the domain of your Secret Server:'
       STDIN.gets.chomp
     end
 
-    ## Retrieve the value from a field label of a secret
+    ##
+    # Retrieve the value from a field label of a secret
     # Will raise an error if there are any issues
     # @param [Integer] the secret id
     # @param [String] the field label to get, defaults to Password
@@ -56,7 +60,8 @@ module Zanzibar
       raise "There was an error getting '#{fieldlabel}' for secret #{scrt_id}: #{err}"
     end
 
-    ## Retrieve a simple password from a secret
+    ##
+    # Retrieve a simple password from a secret
     # Calls get get_fieldlabel_value()
     # @param [Integer] the secret id
     # @return [String] the password for the given secret
@@ -64,7 +69,8 @@ module Zanzibar
       get_fieldlabel_value(scrt_id)
     end
 
-    ## Get the password, save it to a file, and return the path to the file.
+    ##
+    # Get the password, save it to a file, and return the path to the file.
     def get_username_and_password_and_save(scrt_id, path, name)
       secret_items = @client.get_secret(scrt_id)[:secret][:items][:secret_item]
       password = @client.get_secret_item_by_field_name(secret_items, 'Password')[:value]
@@ -73,7 +79,8 @@ module Zanzibar
       File.join(path, name)
     end
 
-    ## Write the password to a file. Intended for use with a Zanzifile
+    ##
+    # Write the password to a file. Intended for use with a Zanzifile
     def save_username_and_password_to_file(password, username, path, name)
       user_pass = { 'username' => username.to_s, 'password' => password.to_s }.to_yaml
       File.open(File.join(path, name), 'wb') do |file|
@@ -81,7 +88,8 @@ module Zanzibar
       end
     end
 
-    ## Downloads a file for a secret and places it where Zanzibar is running, or :path if specified
+    ##
+    # Downloads a file for a secret and places it where Zanzibar is running, or :path if specified
     # Raise on error
     # @param [Hash] args, :scrt_id, :type (one of "Private Key", "Public Key", "Attachment"), :scrt_item_id - optional, :path - optional
     def download_secret_file(args = {})
@@ -92,17 +100,25 @@ module Zanzibar
       raise "There was an error getting the #{args[:type]} for secret #{args[:scrt_id]}: #{err}"
     end
 
-    ## Methods to maintain backwards compatibility
+    ##
+    # Download a private key secret
+    # @deprecated
     def download_private_key(args = {})
       args[:type] = 'Private Key'
       download_secret_file(args)
     end
 
+    ##
+    # Download a public key secret
+    # @deprecated
     def download_public_key(args = {})
       args[:type] = 'Public Key'
       download_secret_file(args)
     end
 
+    ##
+    # Download an arbitrary secret attachment
+    # @deprecated
     def download_attachment(args = {})
       args[:type] = 'Attachment'
       download_secret_file(args)

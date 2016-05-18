@@ -6,17 +6,35 @@ module Zanzibar
   module Actions
     # Download or verify the secrets in a Zanzifile
     class Bundle < Base
+      ##
+      # The settings defined in the Zanzifile
       attr_accessor :settings
+
+      ##
+      # The unresolved secrets from the Zanzifile
       attr_accessor :remote_secrets
+
+      ##
+      # The resolved secrets from the Zanzifile.resolved
       attr_accessor :local_secrets
+
+      ##
+      # Whether to disregard local secrets and re-download regardness
       attr_accessor :update
+
+      ##
+      # Our Zanzibar client
       attr_accessor :zanzibar
 
+      ##
+      # An action that will fetch secrets defined in a Zanzifile
       def initialize(ui, options, args = {})
         super(ui, options)
         @update = args[:update]
       end
 
+      ##
+      # Coordinate downloading to secrets (or skipping ones we already have)
       def run
         ensure_zanzifile
         load_required_secrets

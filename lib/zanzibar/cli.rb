@@ -8,12 +8,20 @@ require 'zanzibar/error'
 require 'zanzibar/defaults'
 
 module Zanzibar
-  # The `zanzibar` binay/thor application main class
+
+  ##
+  # The `zanzibar` binary/thor application main class.
+  # See http://whatisthor.com/ for information on syntax.
+
   class Cli < Thor
     include Thor::Actions
 
+    ##
+    # The stream to which we are writing messages (usually stdout)
     attr_accessor :ui
 
+    ##
+    # Initialize the application and set some logging defaults
     def initialize(*)
       super
       the_shell = (options['no-color'] ? Thor::Shell::Basic.new : shell)
@@ -24,11 +32,15 @@ module Zanzibar
       debug_header
     end
 
+    ##
+    # Print the version of the application
     desc 'version', 'Display your Zanzibar verion'
     def version
       say "#{APPLICATION_NAME} Version: #{VERSION}"
     end
 
+    ##
+    # Generate a new blank Zanzifile
     desc 'init', "Create an empty #{ZANZIFILE_NAME} in the current directory."
     option 'verbose', type: :boolean, default: false, aliases: :v
     option 'wsdl', type: :string, aliases: :w,
@@ -46,8 +58,12 @@ module Zanzibar
       run_action { init! }
     end
 
+    ##
+    # Fetch secrets declared in a local Zanzifle
+
     desc 'bundle', "Fetch secrets declared in your #{ZANZIFILE_NAME}"
     option 'verbose', type: :boolean, default: false, aliases: :v
+
     def bundle
       run_action { bundle! }
     end
@@ -59,8 +75,12 @@ module Zanzibar
     desc 'install', "Alias to `#{APPLICATION_NAME} bundle`"
     alias install bundle
 
+    ##
+    # Redownload Zazifile secrets
+
     desc 'update', "Redownload all secrets in your #{ZANZIFILE_NAME}"
     option 'verbose', type: :boolean, default: false, aliases: :v
+
     def update
       run_action { update! }
     end
@@ -80,6 +100,8 @@ module Zanzibar
                          desc: 'Specify a field (by label) to get'
     option 'username', type: :string, aliases: :u
     option 'password', type: :string, aliases: :p
+    ##
+    # Fetch a single secret specified on the commandline
     def get(scrt_id)
       run_action { get! scrt_id }
     end
@@ -93,6 +115,7 @@ module Zanzibar
       @ui.debug { "#{APPLICATION_NAME} Version: #{VERSION}" }
     end
 
+    ##
     # Run the specified action and rescue errors we
     # explicitly send back to format them
     def run_action(&_block)
