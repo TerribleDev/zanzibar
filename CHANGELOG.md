@@ -11,6 +11,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Lots of rubocop-y code cleanup
 - Converted from code climate classic to code climate platform
 - Added rake task to run code climate platform locally
+- Broke low-level secret server operations into `zanzibar/client`
 
 ## [0.1.27] - 2016-04-15
 ### Added
