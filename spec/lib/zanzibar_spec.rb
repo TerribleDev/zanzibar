@@ -13,7 +13,7 @@ describe 'Zanzibar Test' do
     stub_request(:any, 'https://www.zanzitest.net/webservices/sswebservice.asmx')
       .to_return(body: AUTH_XML, status: 200)
 
-    expect(client.get_token).to eq('imatoken')
+    expect(client.instance_variable_get(:@client).generate_token).to eq('imatoken')
   end
 
   it 'should get a secret' do
@@ -21,7 +21,7 @@ describe 'Zanzibar Test' do
       .to_return(body: AUTH_XML, status: 200).then
       .to_return(body: SECRET_XML, status: 200)
 
-    expect(client.get_secret(1234)[:secret][:name]).to eq('Zanzi Test Secret')
+    expect(client.instance_variable_get(:@client).get_secret(1234)[:secret][:name]).to eq('Zanzi Test Secret')
   end
 
   it 'should get a password' do
@@ -119,8 +119,8 @@ describe 'Zanzibar Test' do
     ENV['ZANZIBAR_USER'] = 'environment_user'
     ENV['ZANZIBAR_PASSWORD'] = 'environment_password'
     client = Zanzibar::Zanzibar.new(domain: 'zanzitest.net', wsdl: 'spec/scrt.wsdl')
-    expect(client.get_client_username).to eq(ENV['ZANZIBAR_USER'])
-    expect(client.get_client_password).to eq(ENV['ZANZIBAR_PASSWORD'])
+    expect(client.instance_variable_get(:@username)).to eq(ENV['ZANZIBAR_USER'])
+    expect(client.instance_variable_get(:@password)).to eq(ENV['ZANZIBAR_PASSWORD'])
     ENV.delete 'ZANZIBAR_PASSWORD'
     ENV.delete 'ZANZIBAR_USER'
   end
