@@ -7,15 +7,24 @@ module Zanzibar
   module Actions
     # Fetch a single secret
     class Get < Base
+      ##
+      # The options to use when initializing our Zanzibar client
       attr_accessor :zanibar_options
+
+      ##
+      # The id of the secret to download
       attr_accessor :scrt_id
 
+      ##
+      # Initialize the action
       def initialize(ui, options, scrt_id)
         super(ui, options)
         @scrt_id = scrt_id
         @zanzibar_options = {}
       end
 
+      ##
+      # Ensure we have the options we need and download the secret
       def run
         construct_options
         ensure_options
@@ -23,6 +32,8 @@ module Zanzibar
         fetch_secret(@scrt_id)
       end
 
+      ##
+      # Actually download the secret
       def fetch_secret(scrt_id)
         scrt = ::Zanzibar::Zanzibar.new(@zanzibar_options)
 
@@ -34,6 +45,8 @@ module Zanzibar
         end
       end
 
+      ##
+      # Coalesce our options and some defaults to ensure we are ready to run
       def construct_options
         @zanzibar_options[:wsdl] = construct_wsdl
         @zanzibar_options[:globals] = { ssl_verify_mode: :none } if options['ignoressl']
@@ -44,6 +57,8 @@ module Zanzibar
         @zanzibar_options[:filelabel] = options['filelabel'] if options['filelabel']
       end
 
+      ##
+      # Construct a WSDL URL from the server hostname if necessary
       def construct_wsdl
         if options['wsdl'].nil? && options['server']
           DEFAULT_WSDL % options['server']
@@ -52,6 +67,8 @@ module Zanzibar
         end
       end
 
+      ##
+      # Make sure a proper WSDL was constructed
       def ensure_options
         return if @zanzibar_options[:wsdl]
         raise Error, NO_WSDL_ERROR

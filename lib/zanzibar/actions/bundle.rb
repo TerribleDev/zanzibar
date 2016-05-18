@@ -6,17 +6,35 @@ module Zanzibar
   module Actions
     # Download or verify the secrets in a Zanzifile
     class Bundle < Base
+      ##
+      # The settings defined in the Zanzifile
       attr_accessor :settings
+
+      ##
+      # The unresolved secrets from the Zanzifile
       attr_accessor :remote_secrets
+
+      ##
+      # The resolved secrets from the Zanzifile.resolved
       attr_accessor :local_secrets
+
+      ##
+      # Whether to disregard local secrets and re-download regardness
       attr_accessor :update
+
+      ##
+      # Our Zanzibar client
       attr_accessor :zanzibar
 
+      ##
+      # An action that will fetch secrets defined in a Zanzifile
       def initialize(ui, options, args = {})
         super(ui, options)
         @update = args[:update]
       end
 
+      ##
+      # Coordinate downloading to secrets (or skipping ones we already have)
       def run
         ensure_zanzifile
         load_required_secrets
@@ -95,11 +113,8 @@ module Zanzibar
         downloaded_secrets = {}
         remote_secrets.each do |key, secret|
           full_path = secret.key?('prefix') ? File.join(@settings['secret_dir'], secret['prefix']) : @settings['secret_dir']
-          downloaded_secrets[key] = download_one_secret(secret['id'],
-                                                        secret['label'],
-                                                        full_path,
-                                                        args,
-                                                        secret['name'] || "#{secret['id']}_password")
+          downloaded_secrets[key] = download_one_secret(secret['id'], secret['label'], full_path,
+                                                        args, secret_filename(secret))
 
           debug { "Downloaded secret: #{key} to #{@settings['secret_dir']}..." }
         end
@@ -133,6 +148,10 @@ module Zanzibar
         @zanzibar ||= ::Zanzibar::Zanzibar.new(wsdl: @settings['wsdl'],
                                                domain: @settings['domain'],
                                                globals: args)
+      end
+
+      def secret_filename(secret)
+        secret['name'] || "#{secret['id']}_password"
       end
     end
   end

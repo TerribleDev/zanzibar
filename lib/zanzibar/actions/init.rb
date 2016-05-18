@@ -8,6 +8,8 @@ module Zanzibar
   module Actions
     # Create a new Zanzifile
     class Init < Base
+      ##
+      # Make sure we don't already have a Zanzifile, then template one
       def run
         check_for_zanzifile
         write_template
@@ -28,9 +30,12 @@ module Zanzibar
         end
       end
 
+      ##
       # Allows us to easily feed our options hash
       # to an ERB
       class TemplateRenderer < OpenStruct
+        ##
+        # Render an ERB template to a string
         def render(template)
           ERB.new(template).result(binding)
         end
