@@ -1,6 +1,6 @@
 # Zanzibar
 [![Gem Version](https://badge.fury.io/rb/zanzibar.svg)](http://badge.fury.io/rb/zanzibar)
-[![Code Climate](https://codeclimate.com/github/Cimpress-MCP/zanzibar/badges/gpa.svg)](https://codeclimate.com/github/Cimpress-MCP/zanzibar)
+[![Code Climate](https://codeclimate.com/github/Cimpress-MCP/zanzibar/badges/gpa.svg?1=1)](https://codeclimate.com/github/Cimpress-MCP/zanzibar)
 [![Test Coverage](https://codeclimate.com/github/Cimpress-MCP/zanzibar/badges/coverage.svg)](https://codeclimate.com/github/Cimpress-MCP/zanzibar/coverage)
 [![Dependency Status](https://gemnasium.com/badges/github.com/Cimpress-MCP/zanzibar.svg)](https://gemnasium.com/github.com/Cimpress-MCP/zanzibar)
 [![Inline docs](http://inch-ci.org/github/cimpress-mcp/zanzibar.svg?branch=master)](http://inch-ci.org/github/cimpress-mcp/zanzibar)
