@@ -8,11 +8,9 @@ require 'zanzibar/error'
 require 'zanzibar/defaults'
 
 module Zanzibar
-
   ##
   # The `zanzibar` binary/thor application main class.
   # See http://whatisthor.com/ for information on syntax.
-
   class Cli < Thor
     include Thor::Actions
 

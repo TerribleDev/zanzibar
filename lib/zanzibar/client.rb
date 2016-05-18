@@ -8,7 +8,6 @@ module Zanzibar
   ##
   # Class for performing low-level WSDL actions against Secret Server
   class Client
-
     ##
     # Initializes the Savon client class variable with the wdsl document location and optional global variables
     # @param globals{}, optional
