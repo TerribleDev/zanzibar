@@ -86,6 +86,9 @@ module Zanzibar
       secret_items.each do |item|
         return item if item[:field_name] == field_name
       end
+      # key not found
+      availableFields = secret_items.map{|item| item[:field_name]}
+      raise KeyError, "Field '#{field_name}' not found; available fields are #{availableFields}."
     end
   end
 end
